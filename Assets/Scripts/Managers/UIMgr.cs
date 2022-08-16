@@ -27,15 +27,22 @@ public class UIMgr : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void GameOver(float time)
+    public void GameOver(int rank)
     {
         if (gameOverText && gameOverPanel)
         {
             var bestTime = PlayerPrefs.GetFloat("BestTime", 0);
-            bestTime = Mathf.Max(bestTime, time);
-            gameOverText.text = string.Format("<b>Press <color=red>R</color> to Restart</b>\n<i>Best Time : {0:N2}</i>", bestTime);
+            if(rank>=1)
+            {
+                gameOverText.text = string.Format("<i>Success! \n Got Item : {0}</i>", rank);
+            }
+            else
+            {
+                gameOverText.text = string.Format("<i>Failed!</i>");
+            }
             PlayerPrefs.SetFloat("BestTime", bestTime);
             gameOverPanel.SetActive(true);
+            timer.text = "";
         }
     }
 
@@ -46,5 +53,9 @@ public class UIMgr : MonoBehaviour
     public void OnPlay()
     {
         if (gameOverPanel) gameOverPanel.SetActive(false);
+    }
+
+    private void Update()
+    {
     }
 }

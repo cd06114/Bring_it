@@ -7,7 +7,7 @@ public class CanvasMgr : MonoBehaviour
     public GameObject player;
     public GameObject gameObject;
     Vector3 dist;
-    // Start is called before the first frame update
+    //// Start is called before the first frame update
     void Start()
     {
         Vector3 playerPos = player.transform.position;

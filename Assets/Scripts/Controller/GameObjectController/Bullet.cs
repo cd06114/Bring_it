@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour
         if (tag.Equals("Player"))//"Player" == other.tag
         {
             if (null != EventHadleOnCollisionPlayer) EventHadleOnCollisionPlayer();
+            UIMgr.Instance.GameOver(GameMgr.Instance.itemRank);
         }
         else if (tag.Equals("Respawn") || other.name.Equals(name)) { gameObject.SetActive(false); return; }
         gameObject.SetActive(false);

@@ -5,8 +5,9 @@ using System;
 using System.Threading;
 public class FloorTrap : MonoBehaviour
 {
-    float movingTime = 1f;
-    public float rotSpeed = 0f;
+    float movingTime = 3f;  //랜덤으로 속도 바뀌는 주기
+    float rotSpeed = 0;
+    public int speedRange;
     public GameObject GameObject;
     bool isMoved= false;
     // Start is called before the first frame update
@@ -19,28 +20,38 @@ public class FloorTrap : MonoBehaviour
     void Update()
     {
         //Debug.Log(GameObject.transform.rotation.z);
-        //transform.Rotate(new Vector3(0, 0, rotSpeed * Time.deltaTime));
-
-        if (isMoved == false)
+        if(movingTime>0)
         {
-            if (GameObject.transform.rotation.z <= -0.4)
-            {
-                isMoved = true;
-            }
-                transform.Rotate(new Vector3(0, 0, -2*rotSpeed * Time.deltaTime));
-
-                movingTime -= Time.deltaTime;
-            
+            transform.Rotate(new Vector3(0, rotSpeed * Time.deltaTime, 0));
+            movingTime -= Time.deltaTime;
         }
         else
         {
-            if (GameObject.transform.rotation.z >= 0)
-            {
-                isMoved = false;
-
-            }
-                transform.Rotate(new Vector3(0, 0, 0.2f * rotSpeed * Time.deltaTime));
-                movingTime -= Time.deltaTime;
+            System.Random rnd = new System.Random();
+            rotSpeed = rnd.Next(-speedRange, speedRange);
+            movingTime = 3f;
         }
+        
+        //if (isMoved == false)
+        //{
+        //    if (GameObject.transform.rotation.z <= -0.4)
+        //    {
+        //        isMoved = true;
+        //    }
+        //        transform.Rotate(new Vector3(0, 0, -2*rotSpeed * Time.deltaTime));
+
+        //        movingTime -= Time.deltaTime;
+
+        //}
+        //else
+        //{
+        //    if (GameObject.transform.rotation.z >= 0)
+        //    {
+        //        isMoved = false;
+
+        //    }
+        //        transform.Rotate(new Vector3(0, 0, 0.2f * rotSpeed * Time.deltaTime));
+        //        movingTime -= Time.deltaTime;
+        //}
     }
 }

@@ -1,7 +1,9 @@
 //using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class GameMgr : MonoBehaviour
 {
@@ -92,7 +94,7 @@ public class GameMgr : MonoBehaviour
             if (bullet && player)
             {
                 bullet.EventHadleOnCollisionPlayer += player.OnDamaged;
-                bullet.EventHadleOnCollisionPlayer += () => { UIMgr.Instance.GameOver(timer); };
+                bullet.EventHadleOnCollisionPlayer += () => { UIMgr.Instance.GameOver(itemRank); };
             }
             if (bullet) listBullet.Add(bullet);
             return bullet;
@@ -111,7 +113,7 @@ public class GameMgr : MonoBehaviour
         if (bullet)
         {
             // ÅºÈ¯ ¹ß»ç.
-            var pos_index = Random.Range(0, turrets.Length);
+            var pos_index = UnityEngine.Random.Range(0, turrets.Length);
             var pos = turrets[pos_index].transform.position + Vector3.up * 1.5f;
             bullet.SetPosition(pos);
             var dir = (player.position - pos).normalized;
@@ -140,6 +142,7 @@ public class GameMgr : MonoBehaviour
 
         }
     }
+    public event Action EventHadleOnCollisionPlayer;
 
     void Update()
     {
@@ -159,9 +162,16 @@ public class GameMgr : MonoBehaviour
                 timer -= Time.deltaTime;
                 UIMgr.Instance.Timer = timer;
             }
+            if(timer < 0)
+            {
+                if (null != EventHadleOnCollisionPlayer) EventHadleOnCollisionPlayer();
+                gameObject.SetActive(false);
+                UIMgr.Instance.GameOver(itemRank);
+            }
             //else if (Input.GetKeyDown(KeyCode.R)) SceneManager.LoadScene("Dodge");
 
         }
+
     }
 
 

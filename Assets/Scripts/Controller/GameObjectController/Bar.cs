@@ -29,6 +29,6 @@ public class Bar : MonoBehaviour
 
     void Update()
     {
-        transform.Rotate(new Vector3(0, 0, rotSpeed * Time.deltaTime));
+        transform.Rotate(new Vector3(rotSpeed * Time.deltaTime, 0, 0));
     }
 }

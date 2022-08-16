@@ -47,23 +47,23 @@ public class Respawn : MonoBehaviour
 
         GameObject instance = Instantiate(selectedPrefab, spawnPos, Quaternion.identity);
         Material[] mat = instance.GetComponent<MeshRenderer>().materials;
-        Debug.Log(instance.transform.position.z);
-        if (instance.transform.position.z < -150)
-        {
-            instance.GetComponent<MeshRenderer>().material = mat[4];
-        }
-        else if (instance.transform.position.z < 0)
-        {
-            instance.GetComponent<MeshRenderer>().material = mat[3];
-        }
-        else if (instance.transform.position.z > 100)
-        {
-            instance.GetComponent<MeshRenderer>().material = mat[2];
-        }
-        else
-        {
-            instance.GetComponent<MeshRenderer>().material = mat[3];
-        }
+        //Debug.Log(instance.transform.position.z);
+        //if (instance.transform.position.z < -150)
+        //{
+        //    instance.GetComponent<MeshRenderer>().material = mat[4];
+        //}
+        //else if (instance.transform.position.z < 0)
+        //{
+        //    instance.GetComponent<MeshRenderer>().material = mat[3];
+        //}
+        //else if (instance.transform.position.z > 100)
+        //{
+        //    instance.GetComponent<MeshRenderer>().material = mat[2];
+        //}
+        //else
+        //{
+        //    instance.GetComponent<MeshRenderer>().material = mat[3];
+        //}
 
         gameObject.Add(instance);
     }
