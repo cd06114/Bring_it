@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using UnityEngine.Pool;
 
 public class GameMgr : MonoBehaviour
 {
+    private ObjectPool<Bullet> _bulletPool;
+    private ObjectPool<Rock> _rockPool;
+
     public static GameMgr Instance { get; private set; }
     public int point = 0;
     private Player player;
@@ -25,8 +29,8 @@ public class GameMgr : MonoBehaviour
 
     private float spawnRate = 1f;
     private float rockSpawnRate = 1f;
-    private float checkTime = 10;
-    public float timer = 10f;
+    private float checkTime = 20;
+    public float timer;
     private void Awake()
     {
         if (null == Instance)
@@ -41,12 +45,56 @@ public class GameMgr : MonoBehaviour
 
     void Start()
     {
+        _bulletPool = new ObjectPool<Bullet>(
+            createFunc: () =>
+            {
+                var createdBullet = Instantiate(bulletPrefab);
+                createdBullet.poolToReturn = _bulletPool;
+                return createdBullet;
+            }
+                ,
+            actionOnGet: (bullet) =>
+            {
+                bullet.gameObject.SetActive(true);
+                bullet.Reset();
+            },
+            actionOnRelease: (Bullet) =>
+            {
+                Bullet.gameObject.SetActive(false);
+            },
+            actionOnDestroy: (bullet) =>
+            {
+                Destroy(bullet.gameObject);
+            }, maxSize: 30
+            );
+        _rockPool = new ObjectPool<Rock>(
+            createFunc: () =>
+            {
+                var createdBullet = Instantiate(rockPrefab);
+                createdBullet.poolToReturn = _rockPool;
+                return createdBullet;
+            }
+                ,
+            actionOnGet: (rock) =>
+            {
+                rock.gameObject.SetActive(true);
+                rock.Reset();
+            },
+            actionOnRelease: (rock) =>
+            {
+                rock.gameObject.SetActive(false);
+            },
+            actionOnDestroy: (rock) =>
+            {
+                Destroy(rock.gameObject);
+            }, maxSize: 30
+            );
         Init();
+
     }
     void Init()
     {
         UIMgr.Instance.OnPlay();
-        timer = 10;
         spawnRate = 1f;
         //spwanRateMax = 0.8f;
         player = FindObjectOfType<Player>();
@@ -73,7 +121,8 @@ public class GameMgr : MonoBehaviour
         if (rockPrefab)
         {
             //Debug.Log("----------------");
-            var rock = Instantiate(rockPrefab);
+            //var rock = Instantiate(rockPrefab);
+            var rock = _rockPool.Get();
             //if (rock && player)
             //{
             //    rock.EventHadleOnCollisionPlayer += player.OnDamaged;
@@ -90,7 +139,8 @@ public class GameMgr : MonoBehaviour
         if (bulletPrefab)
         {
             //Debug.Log("----------------");
-            var bullet = Instantiate(bulletPrefab);
+            //var bullet = Instantiate(bulletPrefab);
+            var bullet = _bulletPool.Get();
             if (bullet && player)
             {
                 bullet.EventHadleOnCollisionPlayer += player.OnDamaged;

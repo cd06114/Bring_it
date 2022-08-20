@@ -6,6 +6,7 @@ TagManager:
   tags:
   - turret
   - rockRespawn
+  - Rock
   layers:
   - Default
   - TransparentFX

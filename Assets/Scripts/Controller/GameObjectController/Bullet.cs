@@ -2,10 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Pool;
 public class Bullet : MonoBehaviour
 {
     private Rigidbody rigid;
+    public bool IsTriggered { get;private set;}
+    public IObjectPool<Bullet> poolToReturn;
 
+    public void Reset()
+    {
+        IsTriggered = false;
+    }
     private void Awake()
     {
         // 오브젝트 풀링(pooling)을 사용할 것이므로 생성 후 비활성화.
@@ -18,12 +25,20 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var tag = other.tag;
-        if (tag.Equals("Player"))//"Player" == other.tag
+        //if (tag.Equals("Player"))//"Player" == other.tag
+        //{
+        //    if (null != EventHadleOnCollisionPlayer) EventHadleOnCollisionPlayer();
+        //    UIMgr.Instance.GameOver(GameMgr.Instance.itemRank);
+        //}
+        if (IsTriggered)
         {
-            if (null != EventHadleOnCollisionPlayer) EventHadleOnCollisionPlayer();
-            UIMgr.Instance.GameOver(GameMgr.Instance.itemRank);
+            return;
         }
-        else if (tag.Equals("Respawn") || other.name.Equals(name)) { gameObject.SetActive(false); return; }
+        if (tag.Equals("Respawn") || other.name.Equals(name)) {
+
+            IsTriggered = true;
+            StartCoroutine(DestroyBullet());
+        }
         gameObject.SetActive(false);
     }
 
@@ -48,5 +63,11 @@ public class Bullet : MonoBehaviour
     void Update()
     {
 
+    }
+
+    private IEnumerator DestroyBullet()
+    {
+        yield return new WaitForSeconds(3f);
+        poolToReturn.Release(this);
     }
 }
